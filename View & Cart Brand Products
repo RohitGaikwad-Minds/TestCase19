@@ -1,0 +1,60 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.List;
+
+public class ViewAndCartBrandProductsTest {
+    public static void main(String[] args) {
+        // Set the path to your ChromeDriver executable
+        System.setProperty("webdriver.chrome.driver", "path_to_chromedriver.exe");
+
+        // Instantiate ChromeDriver
+        WebDriver driver = new ChromeDriver();
+
+        // Navigate to the website
+        driver.get("https://automationexercise.com/");
+
+        // Locate the brand link that you want to view
+        WebElement brandLink = driver.findElement(By.linkText("Brand Name"));
+        brandLink.click();
+
+        // Verify that you are on the brand page
+        String expectedTitle = "Brand Name";
+        String actualTitle = driver.getTitle();
+
+        if (actualTitle.equals(expectedTitle)) {
+            System.out.println("Successfully navigated to the brand page.");
+        } else {
+            System.out.println("Failed to navigate to the brand page.");
+        }
+
+        // Retrieve the list of products on the brand page
+        List<WebElement> productList = driver.findElements(By.xpath("//div[@class='product-item']"));
+
+        // Print the product names
+        for (WebElement product : productList) {
+            WebElement productNameElement = product.findElement(By.xpath(".//h2[@class='woocommerce-loop-product__title']"));
+            String productName = productNameElement.getText();
+            System.out.println(productName);
+        }
+
+        // Optionally, add products to the cart by clicking on the "Add to Cart" button
+        WebElement addToCartButton = productList.get(0).findElement(By.xpath(".//a[@class='add_to_cart_button']"));
+        addToCartButton.click();
+
+        // Verify that the products have been added to the cart
+        WebElement cartIcon = driver.findElement(By.xpath("//a[@class='cart-contents']"));
+        String cartItemCount = cartIcon.getText();
+
+        if (cartItemCount.equals("1")) {
+            System.out.println("Product has been added to the cart.");
+        } else {
+            System.out.println("Failed to add product to the cart.");
+        }
+
+        // Close the browser
+        driver.quit();
+    }
+}
